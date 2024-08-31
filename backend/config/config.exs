@@ -19,8 +19,7 @@ config :ecom, EcomWeb.Endpoint,
     formats: [json: EcomWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: Ecom.PubSub,
-  live_view: [signing_salt: "i8sqWq5q"]
+  pubsub_server: Ecom.PubSub
 
 # Configures the mailer
 #

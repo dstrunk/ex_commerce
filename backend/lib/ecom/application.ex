@@ -17,7 +17,8 @@ defmodule Ecom.Application do
       # Start a worker by calling: Ecom.Worker.start_link(arg)
       # {Ecom.Worker, arg},
       # Start to serve requests, typically the last entry
-      EcomWeb.Endpoint
+      EcomWeb.Endpoint,
+      {Absinthe.Subscription, EcomWeb.Endpoint}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
