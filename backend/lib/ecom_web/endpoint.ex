@@ -15,6 +15,12 @@ defmodule EcomWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
+  if Application.compile_env(:ecom, :dev_routes) do
+    plug Plug.MethodOverride
+    plug Plug.Head
+    plug EcomWeb.Router
+  end
+
   plug Absinthe.Plug,
     schema: EcomWeb.Schema
 end
