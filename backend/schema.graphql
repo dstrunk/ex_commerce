@@ -1,0 +1,17 @@
+schema {
+  query: RootQueryType
+}
+
+type Product {
+  name: String!
+  description: String
+  price: Int!
+}
+
+type RootQueryType {
+  "Find a specific product by ID"
+  product(id: ID!): Product
+
+  "Get a list of all products"
+  products: [Product!]!
+}
