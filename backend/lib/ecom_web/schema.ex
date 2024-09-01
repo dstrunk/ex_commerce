@@ -1,5 +1,6 @@
 defmodule EcomWeb.Schema do
   use Absinthe.Schema
+  alias EcomWeb.CatalogResolver
 
   import_types Absinthe.Type.Custom
 
@@ -10,11 +11,16 @@ defmodule EcomWeb.Schema do
   end
 
   query do
+    @desc "Find a specific product by ID"
     field :product, :product do
       arg :id, non_null(:id)
-      resolve fn %{id: product_id}, _ ->
-        {:ok, Ecom.Catalog.get_product!(product_id)}
-      end
+
+      resolve &CatalogResolver.find_product/3
+    end
+
+    @desc "Get a list of all products"
+    field :products, non_null(list_of(non_null(:product))) do
+      resolve &CatalogResolver.all_products/3
     end
   end
 end

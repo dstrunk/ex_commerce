@@ -24,7 +24,7 @@ defmodule Ecom.MixProject do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(:test), do: ["lib", "test/support", "test/factories"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -42,6 +42,8 @@ defmodule Ecom.MixProject do
       {:phoenix_pubsub, "~> 2.0"},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
+      {:ex_machina, "~> 2.7.0"},
+      {:faker, "~> 0.18", only: :test},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.20"},
