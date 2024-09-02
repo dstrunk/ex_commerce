@@ -1,6 +1,6 @@
-defmodule Ecom do
+defmodule ExCommerce do
   @moduledoc """
-  Ecom keeps the contexts that define your domain
+  ExCommerce keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

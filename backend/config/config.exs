@@ -7,19 +7,19 @@
 # General application configuration
 import Config
 
-config :ecom,
-  ecto_repos: [Ecom.Repo],
+config :ex_commerce,
+  ecto_repos: [ExCommerce.Repo],
   generators: [timestamp_type: :utc_datetime, binary_id: true]
 
 # Configures the endpoint
-config :ecom, EcomWeb.Endpoint,
+config :ex_commerce, ExCommerceWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [json: EcomWeb.ErrorJSON],
+    formats: [json: ExCommerceWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: Ecom.PubSub
+  pubsub_server: ExCommerce.PubSub
 
 # Configures the mailer
 #
@@ -28,7 +28,7 @@ config :ecom, EcomWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :ecom, Ecom.Mailer, adapter: Swoosh.Adapters.Local
+config :ex_commerce, ExCommerce.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configures Elixir's Logger
 config :logger, :console,

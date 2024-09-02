@@ -1,4 +1,4 @@
-defmodule EcomWeb.Telemetry do
+defmodule ExCommerceWeb.Telemetry do
   use Supervisor
   import Telemetry.Metrics
 
@@ -52,23 +52,23 @@ defmodule EcomWeb.Telemetry do
       ),
 
       # Database Metrics
-      summary("ecom.repo.query.total_time",
+      summary("ex_commerce.repo.query.total_time",
         unit: {:native, :millisecond},
         description: "The sum of the other measurements"
       ),
-      summary("ecom.repo.query.decode_time",
+      summary("ex_commerce.repo.query.decode_time",
         unit: {:native, :millisecond},
         description: "The time spent decoding the data received from the database"
       ),
-      summary("ecom.repo.query.query_time",
+      summary("ex_commerce.repo.query.query_time",
         unit: {:native, :millisecond},
         description: "The time spent executing the query"
       ),
-      summary("ecom.repo.query.queue_time",
+      summary("ex_commerce.repo.query.queue_time",
         unit: {:native, :millisecond},
         description: "The time spent waiting for a database connection"
       ),
-      summary("ecom.repo.query.idle_time",
+      summary("ex_commerce.repo.query.idle_time",
         unit: {:native, :millisecond},
         description:
           "The time the connection spent waiting before being checked out for the query"
@@ -86,7 +86,7 @@ defmodule EcomWeb.Telemetry do
     [
       # A module, function and arguments to be invoked periodically.
       # This function must call :telemetry.execute/3 and a metric must be added above.
-      # {EcomWeb, :count_users, []}
+      # {ExCommerceWeb, :count_users, []}
     ]
   end
 end

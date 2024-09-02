@@ -1,4 +1,4 @@
-defmodule Ecom.Catalog.Product do
+defmodule ExCommerce.Catalog.Product do
   use Ecto.Schema
   import Ecto.Changeset
 

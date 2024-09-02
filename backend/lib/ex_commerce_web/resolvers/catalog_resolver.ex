@@ -1,5 +1,5 @@
-defmodule EcomWeb.CatalogResolver do
-  alias Ecom.Catalog
+defmodule ExCommerceWeb.CatalogResolver do
+  alias ExCommerce.Catalog
 
   def all_products(_root, _args, _info) do
     {:ok, Catalog.list_products()}

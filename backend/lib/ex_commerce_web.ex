@@ -1,12 +1,12 @@
-defmodule EcomWeb do
+defmodule ExCommerceWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use EcomWeb, :controller
-      use EcomWeb, :html
+      use ExCommerceWeb, :controller
+      use ExCommerceWeb, :html
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -39,10 +39,10 @@ defmodule EcomWeb do
     quote do
       use Phoenix.Controller,
         formats: [:html, :json],
-        layouts: [html: EcomWeb.Layouts]
+        layouts: [html: ExCommerceWeb.Layouts]
 
       import Plug.Conn
-      import EcomWeb.Gettext
+      import ExCommerceWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -51,9 +51,9 @@ defmodule EcomWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: EcomWeb.Endpoint,
-        router: EcomWeb.Router,
-        statics: EcomWeb.static_paths()
+        endpoint: ExCommerceWeb.Endpoint,
+        router: ExCommerceWeb.Router,
+        statics: ExCommerceWeb.static_paths()
     end
   end
 

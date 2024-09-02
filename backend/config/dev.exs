@@ -1,11 +1,11 @@
 import Config
 
 # Configure your database
-config :ecom, Ecom.Repo,
+config :ex_commerce, ExCommerce.Repo,
   username: System.get_env("POSTGRES_USER", "postgres"),
   password: System.get_env("POSTGRES_PASSWORD", "changeme"),
   hostname: System.get_env("POSTGRES_HOST", "db"),
-  database: System.get_env("POSTGRES_DB", "ecom_dev"),
+  database: System.get_env("POSTGRES_DB", "ex_commerce_dev"),
   port: String.to_integer(System.get_env("POSTGRES_PORT", "5432")),
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
@@ -17,7 +17,7 @@ config :ecom, Ecom.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :ecom, EcomWeb.Endpoint,
+config :ex_commerce, ExCommerceWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {0, 0, 0, 0}, port: 4000],
@@ -51,7 +51,7 @@ config :ecom, EcomWeb.Endpoint,
 # different ports.
 
 # Enable dev routes for dashboard and mailbox
-config :ecom, dev_routes: true
+config :ex_commerce, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

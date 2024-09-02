@@ -1,12 +1,12 @@
-defmodule EcomWeb.ErrorJSONTest do
-  use EcomWeb.ConnCase, async: true
+defmodule ExCommerceWeb.ErrorJSONTest do
+  use ExCommerceWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert EcomWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert ExCommerceWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
   end
 
   test "renders 500" do
-    assert EcomWeb.ErrorJSON.render("500.json", %{}) ==
+    assert ExCommerceWeb.ErrorJSON.render("500.json", %{}) ==
              %{errors: %{detail: "Internal Server Error"}}
   end
 end

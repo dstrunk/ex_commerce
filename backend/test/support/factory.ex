@@ -1,5 +1,5 @@
-defmodule Ecom.Factory do
-  use ExMachina.Ecto, repo: Ecom.Repo
+defmodule ExCommerce.Factory do
+  use ExMachina.Ecto, repo: ExCommerce.Repo
 
-  use Ecom.ProductFactory
+  use ExCommerce.ProductFactory
 end

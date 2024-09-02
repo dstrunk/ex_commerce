@@ -5,7 +5,7 @@ import Config
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
-config :ecom, Ecom.Repo,
+config :ex_commerce, ExCommerce.Repo,
   username: System.get_env("POSTGRES_USER", "postgres"),
   password: System.get_env("POSTGRES_PASSWORD", "changeme"),
   hostname: System.get_env("POSTGRES_HOST", "db"),
@@ -15,13 +15,13 @@ config :ecom, Ecom.Repo,
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :ecom, EcomWeb.Endpoint,
+config :ex_commerce, ExCommerceWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "j1U0mJyzvrkX9M+5kXzc062xG1InPzqQ9Shvj0bFsKIzW5q0G45VzKJ/OgeceXqc",
   server: false
 
 # In test we don't send emails
-config :ecom, Ecom.Mailer, adapter: Swoosh.Adapters.Test
+config :ex_commerce, ExCommerce.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false

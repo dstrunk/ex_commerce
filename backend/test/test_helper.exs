@@ -1,3 +1,3 @@
 {:ok, _} = Application.ensure_all_started(:ex_machina)
 ExUnit.start()
-Ecto.Adapters.SQL.Sandbox.mode(Ecom.Repo, :manual)
+Ecto.Adapters.SQL.Sandbox.mode(ExCommerce.Repo, :manual)

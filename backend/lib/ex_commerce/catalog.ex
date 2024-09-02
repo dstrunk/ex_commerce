@@ -1,12 +1,12 @@
-defmodule Ecom.Catalog do
+defmodule ExCommerce.Catalog do
   @moduledoc """
   The Catalog context.
   """
 
   import Ecto.Query, warn: false
-  alias Ecom.Repo
+  alias ExCommerce.Repo
 
-  alias Ecom.Catalog.Product
+  alias ExCommerce.Catalog.Product
 
   @doc """
   Returns the list of products.

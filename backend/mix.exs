@@ -1,9 +1,9 @@
-defmodule Ecom.MixProject do
+defmodule ExCommerce.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ecom,
+      app: :ex_commerce,
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -18,7 +18,7 @@ defmodule Ecom.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Ecom.Application, []},
+      mod: {ExCommerce.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -65,7 +65,7 @@ defmodule Ecom.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "gen.schema": "absinthe.schema.sdl --schema EcomWeb.Schema"
+      "gen.schema": "absinthe.schema.sdl --schema ExCommerceWeb.Schema"
     ]
   end
 end

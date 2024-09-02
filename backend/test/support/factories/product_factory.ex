@@ -1,5 +1,5 @@
-defmodule Ecom.ProductFactory do
-  alias Ecom.Catalog.Product
+defmodule ExCommerce.ProductFactory do
+  alias ExCommerce.Catalog.Product
 
   defmacro __using__(_opts) do
     quote do

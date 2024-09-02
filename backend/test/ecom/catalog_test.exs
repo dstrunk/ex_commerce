@@ -1,12 +1,12 @@
-defmodule Ecom.CatalogTest do
-  use Ecom.DataCase
+defmodule ExCommerce.CatalogTest do
+  use ExCommerce.DataCase
 
-  alias Ecom.Catalog
+  alias ExCommerce.Catalog
 
   describe "products" do
-    alias Ecom.Catalog.Product
+    alias ExCommerce.Catalog.Product
 
-    import Ecom.CatalogFixtures
+    import ExCommerce.CatalogFixtures
 
     @invalid_attrs %{name: nil, description: nil, price: nil}
 

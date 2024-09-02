@@ -1,4 +1,4 @@
-defmodule Ecom.Application do
+defmodule ExCommerce.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -8,22 +8,22 @@ defmodule Ecom.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      EcomWeb.Telemetry,
-      Ecom.Repo,
-      {DNSCluster, query: Application.get_env(:ecom, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: Ecom.PubSub},
+      ExCommerceWeb.Telemetry,
+      ExCommerce.Repo,
+      {DNSCluster, query: Application.get_env(:ex_commerce, :dns_cluster_query) || :ignore},
+      {Phoenix.PubSub, name: ExCommerce.PubSub},
       # Start the Finch HTTP client for sending emails
-      {Finch, name: Ecom.Finch},
-      # Start a worker by calling: Ecom.Worker.start_link(arg)
-      # {Ecom.Worker, arg},
+      {Finch, name: ExCommerce.Finch},
+      # Start a worker by calling: ExCommerce.Worker.start_link(arg)
+      # {ExCommerce.Worker, arg},
       # Start to serve requests, typically the last entry
-      EcomWeb.Endpoint,
-      {Absinthe.Subscription, EcomWeb.Endpoint}
+      ExCommerceWeb.Endpoint,
+      {Absinthe.Subscription, ExCommerceWeb.Endpoint}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Ecom.Supervisor]
+    opts = [strategy: :one_for_one, name: ExCommerce.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
@@ -31,7 +31,7 @@ defmodule Ecom.Application do
   # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
-    EcomWeb.Endpoint.config_change(changed, removed)
+    ExCommerceWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

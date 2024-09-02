@@ -1,6 +1,6 @@
-defmodule EcomWeb.CatalogResolverTest do
-  use EcomWeb.ConnCase, async: true
-  import Ecom.Factory
+defmodule ExCommerceWeb.CatalogResolverTest do
+  use ExCommerceWeb.ConnCase, async: true
+  import ExCommerce.Factory
 
   @products_query """
   query GetProducts {

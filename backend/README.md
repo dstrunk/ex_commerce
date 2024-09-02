@@ -1,4 +1,4 @@
-# Ecom
+# ExCommerce
 
 To start your Phoenix server:
 

@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${POSTGRES_DB:-ecom_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-ex_commerce_dev}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -19,10 +19,10 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${POSTGRES_DB:-ecom_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-ex_commerce_dev}
       POSTGRES_PORT: 5432
       POSTGRES_HOST: db
-      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@${POSTGRES_HOST:-db}/${POSTGRES_DB:-ecom_dev}
+      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@${POSTGRES_HOST:-db}/${POSTGRES_DB:-ex_commerce_dev}
       MIX_ENV: dev
     ports:
       - "4000:4000"

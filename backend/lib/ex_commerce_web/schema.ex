@@ -1,6 +1,6 @@
-defmodule EcomWeb.Schema do
+defmodule ExCommerceWeb.Schema do
   use Absinthe.Schema
-  alias EcomWeb.CatalogResolver
+  alias ExCommerceWeb.CatalogResolver
 
   import_types Absinthe.Type.Custom
 
