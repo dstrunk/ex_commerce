@@ -8,6 +8,8 @@ defmodule ExCommerceWeb.CatalogResolverTest do
       name
       description
       price
+      quantity
+      isActive
     }
   }
   """
@@ -21,7 +23,9 @@ defmodule ExCommerceWeb.CatalogResolverTest do
     expected_result = Enum.map(products, fn product -> %{
       "description" => product.description,
       "name" => product.name,
-      "price" => product.price
+      "price" => product.price,
+      "quantity" => product.quantity,
+      "isActive" => product.is_active,
     } end)
 
     assert json_response(conn, 200) == %{
@@ -35,6 +39,8 @@ defmodule ExCommerceWeb.CatalogResolverTest do
       name
       description
       price
+      quantity
+      isActive
     }
   }
   """
@@ -50,7 +56,9 @@ defmodule ExCommerceWeb.CatalogResolverTest do
       "data" => %{"product" => %{
         "description" => product.description,
         "name" => product.name,
-        "price" => product.price
+        "price" => product.price,
+        "quantity" => product.quantity,
+        "isActive" => product.is_active,
       }}
     }
   end

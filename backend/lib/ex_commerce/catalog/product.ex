@@ -8,6 +8,8 @@ defmodule ExCommerce.Catalog.Product do
     field :name, :string
     field :description, :string
     field :price, :integer
+    field :quantity, :integer
+    field :is_active, :boolean
 
     timestamps(type: :utc_datetime)
   end
@@ -15,7 +17,7 @@ defmodule ExCommerce.Catalog.Product do
   @doc false
   def changeset(product, attrs) do
     product
-    |> cast(attrs, [:name, :description, :price])
-    |> validate_required([:name, :description, :price])
+    |> cast(attrs, [:name, :description, :price, :quantity, :is_active])
+    |> validate_required([:name, :description, :price, :quantity, :is_active])
   end
 end

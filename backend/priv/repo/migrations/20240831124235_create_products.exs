@@ -7,6 +7,8 @@ defmodule ExCommerce.Repo.Migrations.CreateProducts do
       add :name, :string, null: false
       add :description, :string
       add :price, :integer, null: false
+      add :quantity, :integer, null: false
+      add :is_active, :boolean, null: false, default: true
 
       timestamps(type: :utc_datetime)
     end

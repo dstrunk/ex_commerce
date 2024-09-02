@@ -8,6 +8,8 @@ defmodule ExCommerceWeb.Schema do
     field :name, non_null(:string)
     field :description, :string
     field :price, non_null(:integer)
+    field :quantity, :integer
+    field :is_active, :boolean
   end
 
   query do

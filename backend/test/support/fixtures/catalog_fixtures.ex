@@ -13,7 +13,9 @@ defmodule ExCommerce.CatalogFixtures do
       |> Enum.into(%{
         description: "some description",
         name: "some name",
-        price: 42
+        price: 42,
+        quantity: 100,
+        is_active: true
       })
       |> ExCommerce.Catalog.create_product()
 

@@ -21,12 +21,14 @@ defmodule ExCommerce.CatalogTest do
     end
 
     test "create_product/1 with valid data creates a product" do
-      valid_attrs = %{name: "some name", description: "some description", price: 42}
+      valid_attrs = %{name: "some name", description: "some description", price: 42, quantity: 100, is_active: true}
 
       assert {:ok, %Product{} = product} = Catalog.create_product(valid_attrs)
       assert product.name == "some name"
       assert product.description == "some description"
       assert product.price == 42
+      assert product.quantity == 100
+      assert product.is_active == true
     end
 
     test "create_product/1 with invalid data returns error changeset" do
@@ -35,12 +37,14 @@ defmodule ExCommerce.CatalogTest do
 
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
-      update_attrs = %{name: "some updated name", description: "some updated description", price: 43}
+      update_attrs = %{name: "some updated name", description: "some updated description", price: 43, quantity: 10, is_active: false}
 
       assert {:ok, %Product{} = product} = Catalog.update_product(product, update_attrs)
       assert product.name == "some updated name"
       assert product.description == "some updated description"
       assert product.price == 43
+      assert product.quantity == 10
+      assert product.is_active == false
     end
 
     test "update_product/2 with invalid data returns error changeset" do
