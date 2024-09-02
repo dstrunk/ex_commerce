@@ -11,9 +11,9 @@ jobs:
       postgres:
         image: postgres:13
         env:
-          postgres_user: postgres
-          postgres_password: changeme
-          postgres_db: ex_commerce_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: changeme
+          POSTGRES_DB: ex_commerce_test
         ports:
           - 5432:5432
         options: >-
