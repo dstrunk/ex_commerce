@@ -15,7 +15,6 @@ defmodule ExCommerceWeb.Resolvers.CartItemResolver do
         }
 
     case Repo.all(query) do
-      [] -> {:error, "No items found for Quote ID #{id}."}
       items -> {:ok, items}
     end
   end

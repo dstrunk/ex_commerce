@@ -42,4 +42,23 @@ defmodule ExCommerceWeb.CartResolverTest do
              }
            }
   end
+
+  test "empty carts return an empty array", %{conn: conn} do
+    cart = insert(:quote, items: [])
+
+    conn =
+      post(conn, "/", %{
+        "query" => @cart_query,
+        "variables" => %{id: cart.id}
+      })
+
+    assert json_response(conn, 200) == %{
+             "data" => %{
+               "cart" => %{
+                 "isActive" => cart.is_active,
+                 "items" => []
+               }
+             }
+           }
+  end
 end
