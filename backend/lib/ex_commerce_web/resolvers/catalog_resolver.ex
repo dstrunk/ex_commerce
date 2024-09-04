@@ -1,4 +1,4 @@
-defmodule ExCommerceWeb.CatalogResolver do
+defmodule ExCommerceWeb.Resolvers.CatalogResolver do
   alias ExCommerce.Catalog
 
   def all_products(_root, _args, _info) do
