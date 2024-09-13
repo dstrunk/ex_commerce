@@ -40,7 +40,7 @@ Tests run as part of CI. To run them manually, here's how to do it.
 ### Backend
 
 ```sh
-docker compose exec backend mix test
+docker compose exec -e MIX_ENV=test backend mix test
 ```
 
 ### Frontend
