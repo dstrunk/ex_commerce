@@ -9,7 +9,7 @@ defmodule ExCommerce.ProductFactory do
           description: Faker.Lorem.paragraph(3),
           price: Enum.random(10..100),
           quantity: Enum.random(10..1000),
-          is_active: Enum.random([true, false]),
+          is_active: Enum.random([true, false])
         }
       end
     end

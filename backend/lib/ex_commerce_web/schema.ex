@@ -28,6 +28,18 @@ defmodule ExCommerceWeb.Schema do
     field :is_active, :boolean
   end
 
+  object :user do
+    field :id, :id
+    field :email, :string
+    field :first_name, :string
+    field :last_name, :string
+  end
+
+  object :session do
+    field :token, :string
+    field :user, :user
+  end
+
   query do
     @desc "Find a specific product by ID"
     field :product, :product do
@@ -46,6 +58,34 @@ defmodule ExCommerceWeb.Schema do
       arg(:id, non_null(:id))
 
       resolve(&CartResolver.find_quote/3)
+    end
+  end
+
+  mutation do
+    @desc "Register"
+    field :register, :user do
+      arg :email, non_null(:string)
+      arg :password, non_null(:string)
+
+      resolve fn _, args, _ ->
+        ExCommerce.Account.create_user(args)
+      end
+    end
+
+    @desc "Login"
+    field :login, :session do
+      arg :email, non_null(:string)
+      arg :password, non_null(:string)
+
+      resolve fn _, %{email: email, password: password}, _ ->
+        with {:ok, user} <- ExCommerce.Account.authenticate_user(email, password),
+             {:ok, token, _claims} <- ExCommerce.Guardian.encode_and_sign(user) do
+          {:ok, %{user: user, token: token}}
+        else
+          {:error, _reason} ->
+            {:error, "Invalid email or password"}
+        end
+      end
     end
   end
 end
