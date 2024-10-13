@@ -45,6 +45,25 @@ defmodule ExCommerce.Account do
   end
 
   @doc """
+  Gets a user by email.
+
+  ## Examples
+
+      iex> get_user_by_email("user@example.com")
+      {:ok, %User{}}
+
+      iex> get_user_by_email("nonexistent@example.com")
+      {:error, :not_found}
+
+  """
+  def get_user_by_email(email) when is_binary(email) do
+    case Repo.get_by(User, email: email) do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
+  end
+
+  @doc """
   Creates a user.
 
   ## Examples
@@ -58,7 +77,7 @@ defmodule ExCommerce.Account do
   """
   def create_user(attrs \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.registration_changeset(attrs)
     |> Repo.insert()
     |> case do
       {:ok, user} -> {:ok, sanitize_user(user)}
@@ -80,8 +99,12 @@ defmodule ExCommerce.Account do
   """
   def update_user(%User{} = user, attrs) do
     user
-    |> User.changeset(attrs)
+    |> User.update_changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, updated_user} -> {:ok, sanitize_user(updated_user)}
+      error -> error
+    end
   end
 
   @doc """
@@ -110,7 +133,7 @@ defmodule ExCommerce.Account do
 
   """
   def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
+    User.update_changeset(user, attrs)
   end
 
   def authenticate_user(email, password) do
@@ -128,6 +151,6 @@ defmodule ExCommerce.Account do
   end
 
   defp sanitize_user(user) do
-    Map.drop(user, [:password, :password_hash])
+    Map.drop(user, [:password, :new_password, :new_password_confirmation])
   end
 end

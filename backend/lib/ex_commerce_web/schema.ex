@@ -63,12 +63,20 @@ defmodule ExCommerceWeb.Schema do
 
   mutation do
     @desc "Register"
-    field :register, :user do
+    field :register, :session do
       arg :email, non_null(:string)
+      arg :first_name, non_null(:string)
+      arg :last_name, non_null(:string)
       arg :password, non_null(:string)
 
       resolve fn _, args, _ ->
-        ExCommerce.Account.create_user(args)
+        with {:ok, user} <- ExCommerce.Account.create_user(args),
+             {:ok, token, _claims} <- ExCommerce.Guardian.encode_and_sign(user) do
+          {:ok, %{user: user, token: token}}
+        else
+          {:error, _reason} ->
+            {:error, "Unable to sign up"}
+        end
       end
     end
 

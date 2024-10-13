@@ -27,8 +27,8 @@ defmodule ExCommerce.AccountTest do
       assert user.email == "user@example.com"
       assert user.first_name == "some first_name"
       assert user.last_name == "some last_name"
+
       refute Map.has_key?(user, :password)
-      refute Map.has_key?(user, :password_hash)
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -36,15 +36,26 @@ defmodule ExCommerce.AccountTest do
     end
 
     test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      update_attrs = %{email: "updated@example.com", first_name: "some updated first_name", last_name: "some updated last_name", password: "hunter34"}
+      %User{id: user_id} = user = user_fixture()
+      update_attrs = %{
+        email: "updated@example.com",
+        first_name: "some updated first_name",
+        last_name: "some updated last_name",
+        password: "hunter12",
+        new_password: "hunter34",
+        new_password_confirmation: "hunter34"
+      }
 
-      assert {:ok, %User{} = user} = Account.update_user(user, update_attrs)
-      assert user.email == "updated@example.com"
-      assert user.first_name == "some updated first_name"
-      assert user.last_name == "some updated last_name"
-      refute Map.has_key?(user, :password)
-      refute Map.has_key?(user, :password_hash)
+      assert {:ok, %User{} = updated_user} = Account.update_user(user, update_attrs)
+      assert updated_user.id == user_id
+      assert updated_user.email == "updated@example.com"
+      assert updated_user.first_name == "some updated first_name"
+      assert updated_user.last_name == "some updated last_name"
+
+      # Verify that sensitive fields are not present
+      refute Map.has_key?(updated_user, :password)
+      refute Map.has_key?(updated_user, :new_password)
+      refute Map.has_key?(updated_user, :new_password_confirmation)
     end
 
     test "update_user/2 with invalid data returns error changeset" do

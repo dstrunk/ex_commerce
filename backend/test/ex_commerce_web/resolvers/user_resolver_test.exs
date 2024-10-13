@@ -77,13 +77,98 @@ defmodule ExCommerceWeb.UserResolverTest do
     end
 
   @register_mutation """
-  mutation register($email: String!, $password: String!) {
-    register(email: $email, password: $password) {
+  mutation register($email: String!, $firstName: String!, $lastName: String!, $password: String!) {
+    register(email: $email, firstName: $firstName, lastName: $lastName, password: $password) {
       token
       user {
         email
+        firstName
+        lastName
       }
     }
   }
   """
+
+  test "users are able to register", %{conn: conn} do
+    user_attrs = %{
+      email: "newuser@example.com",
+      firstName: "New",
+      lastName: "User",
+      password: "password123"
+    }
+
+    conn = post(conn, "/", %{
+      "query" => @register_mutation,
+      "variables" => user_attrs
+    })
+
+    assert %{
+      "data" => %{
+        "register" => %{
+          "token" => token,
+          "user" => %{
+            "email" => user_email
+          }
+        }
+      }
+    } = json_response(conn, 200)
+
+    assert token != nil
+    assert user_email == user_attrs.email
+
+    # Verify that the user was actually created in the database
+    assert {:ok, user} = ExCommerce.Account.get_user_by_email(user_attrs.email)
+    assert user.email == user_attrs.email
+  end
+
+  test "registration fails with invalid data", %{conn: conn} do
+    invalid_attrs = %{
+      email: "invalid-email",
+      firstName: "",
+      lastName: "",
+      password: "short"
+    }
+
+    conn = post(conn, "/", %{
+      "query" => @register_mutation,
+      "variables" => invalid_attrs
+    })
+
+    assert %{
+      "data" => %{"register" => nil},
+      "errors" => [%{"message" => error_message}]
+    } = json_response(conn, 200)
+
+    assert error_message =~ "Unable to sign up"
+  end
+
+  test "registration fails with duplicate email", %{conn: conn} do
+    user_attrs = %{
+      email: "existing@example.com",
+      first_name: "Another",
+      last_name: "Example",
+      password: "password123"
+    }
+
+    # First, create a user
+    {:ok, _user} = ExCommerce.Account.create_user(user_attrs)
+
+    # Try to register with the same email
+    conn = post(conn, "/", %{
+      "query" => @register_mutation,
+      "variables" => %{
+        email: "existing@example.com",
+        firstName: "Another",
+        lastName: "Example",
+        password: "password456"
+      }
+    })
+
+    assert %{
+      "data" => %{"register" => nil},
+      "errors" => [%{"message" => error_message}]
+    } = json_response(conn, 200)
+
+    assert error_message =~ "Unable to sign up"
+  end
 end
