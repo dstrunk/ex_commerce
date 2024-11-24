@@ -3,6 +3,7 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     modules: [
         '@nuxt/test-utils/module',
+        '@formkit/nuxt',
     ],
     devtools: { enabled: true },
     runtimeConfig: {
@@ -17,5 +18,8 @@ export default defineNuxtConfig({
             tailwindcss: {},
             autoprefixer: {},
         },
+    },
+    formkit: {
+        autoImport: true,
     },
 });
