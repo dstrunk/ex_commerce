@@ -2,8 +2,9 @@
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     modules: [
-        '@nuxt/test-utils/module',
-        '@formkit/nuxt',
+      '@nuxt/test-utils/module',
+      '@formkit/nuxt',
+      '@pinia/nuxt',
     ],
     devtools: { enabled: true },
     runtimeConfig: {
