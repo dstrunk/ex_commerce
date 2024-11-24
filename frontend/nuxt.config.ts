@@ -11,4 +11,11 @@ export default defineNuxtConfig({
             websocketUrl: process.env.WEBSOCKET_URL,
         },
     },
+    css: ['~/assets/css/app.css'],
+    postcss: {
+        plugins: {
+            tailwindcss: {},
+            autoprefixer: {},
+        },
+    },
 });
