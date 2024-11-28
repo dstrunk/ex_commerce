@@ -4,11 +4,13 @@
     "type": "module",
     "scripts": {
         "build": "nuxt build",
+        "codegen": "graphql-codegen",
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
         "postinstall": "nuxt prepare",
-        "test": "vitest run"
+        "test": "vitest run",
+        "predev": "npm codegen"
     },
     "dependencies": {
         "@formkit/nuxt": "^1.6.9",
@@ -21,6 +23,7 @@
         "vue": "latest"
     },
     "devDependencies": {
+        "@graphql-codegen/cli": "^5.0.3",
         "@nuxt/test-utils": "^3.14.1",
         "@testing-library/vue": "^8.1.0",
         "@vue/test-utils": "^2.4.6",

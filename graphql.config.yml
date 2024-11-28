@@ -1,0 +1,4 @@
+projects:
+    ExCommerce:
+        schema: https://api.excommerce.test/
+        documents: frontend/graphql/*.gql

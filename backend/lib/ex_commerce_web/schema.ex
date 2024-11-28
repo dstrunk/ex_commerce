@@ -37,7 +37,7 @@ defmodule ExCommerceWeb.Schema do
 
   object :session do
     field :token, :string
-    field :user, :user
+    field :me, :user
   end
 
   query do
@@ -72,7 +72,7 @@ defmodule ExCommerceWeb.Schema do
       resolve fn _, args, _ ->
         with {:ok, user} <- ExCommerce.Account.create_user(args),
              {:ok, token, _claims} <- ExCommerce.Guardian.encode_and_sign(user) do
-          {:ok, %{user: user, token: token}}
+          {:ok, %{me: user, token: token}}
         else
           {:error, _reason} ->
             {:error, "Unable to sign up"}
@@ -88,7 +88,7 @@ defmodule ExCommerceWeb.Schema do
       resolve fn _, %{email: email, password: password}, _ ->
         with {:ok, user} <- ExCommerce.Account.authenticate_user(email, password),
              {:ok, token, _claims} <- ExCommerce.Guardian.encode_and_sign(user) do
-          {:ok, %{user: user, token: token}}
+          {:ok, %{me: user, token: token}}
         else
           {:error, _reason} ->
             {:error, "Invalid email or password"}

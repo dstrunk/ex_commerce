@@ -5,9 +5,8 @@ defmodule ExCommerceWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", ExCommerceWeb do
-    pipe_through :api
-  end
+  forward "/", Absinthe.Plug,
+    schema: ExCommerceWeb.Schema
 
   # Enable Swoosh mailbox preview in development
   if Application.compile_env(:ex_commerce, :dev_routes) do
