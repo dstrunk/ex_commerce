@@ -1,4 +1,10 @@
-mutation Register($email: String!, $firstName: String!, $lastName: String!, $password: String!) {
+query Session {
+    me {
+        ...userFields
+    }
+}
+
+mutation Registration($email: String!, $firstName: String!, $lastName: String!, $password: String!) {
     register(email: $email, firstName: $firstName, lastName: $lastName, password: $password) {
         token
         me {
@@ -16,9 +22,19 @@ mutation Login($email: String!, $password: String!) {
     }
 }
 
+mutation RefreshToken {
+    refreshToken {
+        token
+        me {
+            ...userFields
+        }
+    }
+}
+
 fragment userFields on User {
     id
     email
     firstName
     lastName
+    fullName
 }

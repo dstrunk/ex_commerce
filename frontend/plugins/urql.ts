@@ -4,12 +4,15 @@ import {
     fetchExchange,
     ssrExchange,
     subscriptionExchange,
+    type SSRData,
+    type Operation,
 } from '@urql/vue';
 import { createClient as createWSClient } from 'graphql-ws';
+import { authExchange } from '@urql/exchange-auth';
 
 export default defineNuxtPlugin((nuxtApp) => {
     const { public: { websocketUrl, apiUrl } } = useRuntimeConfig();
-    const ssrKey = '__URQL_DATA__';
+    const ssrKey: string = '__URQL_DATA__';
 
     const ssr = ssrExchange({
         isClient: import.meta.client,
@@ -18,6 +21,31 @@ export default defineNuxtPlugin((nuxtApp) => {
     const exchanges = [
         cacheExchange,
         ssr,
+        authExchange(async (utils) => {
+            const token = import.meta.client
+                ? window?.localStorage?.getItem('excommerce_token')
+                : null;
+
+            return {
+                addAuthToOperation(operation: Operation): Operation {
+                    if (!token) {
+                        return operation;
+                    }
+
+                    return utils.appendHeaders(operation, {
+                        Authorization: `Bearer ${token}`,
+                    });
+                },
+
+                didAuthError(error, operation) {
+                    return error.graphQLErrors.some((e) => e.extensions?.code === 'FORBIDDEN');
+                },
+
+                async refreshAuth() {
+                    // @TODO add refresh token mutation here
+                },
+            };
+        }),
         fetchExchange,
     ];
 
@@ -47,11 +75,11 @@ export default defineNuxtPlugin((nuxtApp) => {
         exchanges,
     });
 
-    nuxtApp.vueApp.provide('$urql', client);
+    nuxtApp.vueApp.provide('$urql', ref(client));
 
     if (import.meta.client) {
         nuxtApp.hook('app:created', () => {
-            ssr.restoreData(window[ssrKey]);
+            ssr.restoreData(nuxtApp.payload[ssrKey] as SSRData);
         });
     }
 

@@ -6,6 +6,7 @@ const config: CodegenConfig = {
     },
     schema: 'http://backend:4000/',
     documents: ['./graphql/**/*.gql'],
+    ignoreNoDocuments: true,
     generates: {
         './types/graphql/': {
             preset: 'client',

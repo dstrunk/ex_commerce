@@ -1,66 +1,67 @@
 services:
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${POSTGRES_DB:-ex_commerce_dev}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    db:
+        image: postgres:13
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-postgres}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+            POSTGRES_DB: ${POSTGRES_DB:-ex_commerce_dev}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        ports:
+            - "5432:5432"
 
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${POSTGRES_DB:-ex_commerce_dev}
-      POSTGRES_PORT: 5432
-      POSTGRES_HOST: db
-      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@${POSTGRES_HOST:-db}/${POSTGRES_DB:-ex_commerce_dev}
-      MIX_ENV: dev
-    ports:
-      - "4000:4000"
-    volumes:
-      - ./backend:/app
-      - /app/deps
-      - /app/_build
-    command: mix phx.server
-    tty: true
-    stdin_open: true
+    backend:
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        depends_on:
+            - db
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-postgres}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+            POSTGRES_DB: ${POSTGRES_DB:-ex_commerce_dev}
+            POSTGRES_PORT: 5432
+            POSTGRES_HOST: db
+            DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-changeme}@${POSTGRES_HOST:-db}/${POSTGRES_DB:-ex_commerce_dev}
+            MIX_ENV: dev
+        ports:
+            - "4000:4000"
+        volumes:
+            - ./backend:/app
+            - /app/deps
+            - /app/_build
+        command: mix phx.server
+        tty: true
+        stdin_open: true
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    environment:
-      API_URL: https://backend/graphql/
-      WEBSOCKET_URL: ws://backend/socket/
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    command: npm run dev
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        environment:
+            API_URL: https://api.excommerce.test/
+            WEBSOCKET_URL: wss://api.excommerce.test/
+        ports:
+            - "3000:3000"
+            - "24678:24678"
+        volumes:
+            - ./frontend:/app
+            - /app/node_modules
+        command: npm run dev
 
-  nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - backend
-      - frontend
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+    nginx:
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - backend
+            - frontend
+        volumes:
+            - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./nginx/certs:/etc/nginx/certs:ro
 
 volumes:
-  postgres_data:
+    postgres_data:

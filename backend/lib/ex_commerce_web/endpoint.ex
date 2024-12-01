@@ -20,7 +20,4 @@ defmodule ExCommerceWeb.Endpoint do
     plug Plug.Head
     plug ExCommerceWeb.Router
   end
-
-  plug Absinthe.Plug,
-    schema: ExCommerceWeb.Schema
 end

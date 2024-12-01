@@ -1,57 +1,123 @@
 {
-	"root": true,
-	"extends": [
-		"@nuxtjs/eslint-config-typescript"
-	],
-	"rules": {
-		"operator-linebreak": ["error", "before", { "overrides": { "=": "after" } }],
-		"vue/component-name-in-template-casing": ["error"],
-		"vue/component-options-name-casing": ["error"],
-		"vue/define-macros-order": ["error", {
-			"order": ["defineOptions", "defineModel", "defineProps", "defineEmits", "defineSlots"]
-		}],
-		"vue/block-order": ["error", {
-			"order": ["template", "script", "style"]
-		}],
-		"vue/no-v-html": ["off"],
-		"vue/html-button-has-type": ["error"],
-		"vue/require-macro-variable-name": ["error"],
-		"vue/html-indent": ["error", 4],
-		"vue/script-indent": ["error", 4, {
-			"baseIndent": 1,
-			"switchCase": 1,
-			"ignores": []
-		}],
-		"vue/attribute-hyphenation": ["error", "never", {
-			"ignore": []
-		}],
-		"vue/v-on-event-hyphenation": ["error", "never"],
-		"vue/html-self-closing": ["error", {
-			"html": {
-				"void": "always"
-			}
-		}],
-		"arrow-parens": ["error", "always"],
-		"indent": ["error", 4],
-		"comma-dangle": ["error", "only-multiline"],
-		"semi": ["error", "always"],
-		"space-before-function-paren": ["error", {
-			"anonymous": "always",
-			"asyncArrow": "always",
-			"named": "never"
-		}]
-	},
-	"overrides": [
-		{
-			"files": [
-				"*.vue"
-			],
-			"rules": {
-				"indent": "off"
-			}
-		}
-	],
-	"ignorePatterns": [
-		"/types/graphql/*"
-	]
+    "root": true,
+    "extends": [
+        "@nuxtjs/eslint-config-typescript"
+    ],
+    "rules": {
+        "operator-linebreak": [
+            "error",
+            "before",
+            {
+                "overrides": {
+                    "=": "after"
+                }
+            }
+        ],
+        "vue/component-name-in-template-casing": [
+            "error"
+        ],
+        "vue/component-options-name-casing": [
+            "error"
+        ],
+        "vue/define-macros-order": [
+            "error",
+            {
+                "order": [
+                    "defineOptions",
+                    "defineModel",
+                    "defineProps",
+                    "defineEmits",
+                    "defineSlots"
+                ]
+            }
+        ],
+        "vue/block-order": [
+            "error",
+            {
+                "order": [
+                    "template",
+                    "script",
+                    "style"
+                ]
+            }
+        ],
+        "vue/no-v-html": [
+            "off"
+        ],
+        "vue/html-button-has-type": [
+            "error"
+        ],
+        "vue/require-macro-variable-name": [
+            "error"
+        ],
+        "vue/html-indent": [
+            "error",
+            4
+        ],
+        "vue/script-indent": [
+            "error",
+            4,
+            {
+                "baseIndent": 1,
+                "switchCase": 1,
+                "ignores": []
+            }
+        ],
+        "vue/attribute-hyphenation": [
+            "error",
+            "never",
+            {
+                "ignore": []
+            }
+        ],
+        "vue/v-on-event-hyphenation": [
+            "error",
+            "never"
+        ],
+        "vue/html-self-closing": [
+            "error",
+            {
+                "html": {
+                    "void": "always"
+                }
+            }
+        ],
+        "arrow-parens": [
+            "error",
+            "always"
+        ],
+        "indent": [
+            "error",
+            4
+        ],
+        "comma-dangle": [
+            "error",
+            "only-multiline"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "space-before-function-paren": [
+            "error",
+            {
+                "anonymous": "always",
+                "asyncArrow": "always",
+                "named": "never"
+            }
+        ]
+    },
+    "overrides": [
+        {
+            "files": [
+                "*.vue"
+            ],
+            "rules": {
+                "indent": "off"
+            }
+        }
+    ],
+    "ignorePatterns": [
+        "/types/graphql/*"
+    ]
 }

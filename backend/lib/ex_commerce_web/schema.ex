@@ -1,6 +1,6 @@
 defmodule ExCommerceWeb.Schema do
   use Absinthe.Schema
-  alias ExCommerceWeb.Resolvers.{CatalogResolver, CartResolver, CartItemResolver}
+  alias ExCommerceWeb.Resolvers.{CatalogResolver, CartResolver, CartItemResolver, SessionResolver}
 
   import_types(Absinthe.Type.Custom)
 
@@ -33,6 +33,9 @@ defmodule ExCommerceWeb.Schema do
     field :email, :string
     field :first_name, :string
     field :last_name, :string
+    field :full_name, :string do
+      resolve fn user, _, _ -> {:ok, "#{user.first_name} #{user.last_name}"} end
+    end
   end
 
   object :session do
@@ -58,6 +61,11 @@ defmodule ExCommerceWeb.Schema do
       arg(:id, non_null(:id))
 
       resolve(&CartResolver.find_quote/3)
+    end
+
+    @desc "Get the current user"
+    field :me, :user do
+      resolve(&SessionResolver.find_user_by_context/3)
     end
   end
 
@@ -92,6 +100,17 @@ defmodule ExCommerceWeb.Schema do
         else
           {:error, _reason} ->
             {:error, "Invalid email or password"}
+        end
+      end
+    end
+
+    @desc "Refresh token"
+    field :refresh_token, :session do
+      resolve fn _, _args, %{context: %{current_user: user}} ->
+        with {:ok, token, _claims} <- ExCommerce.Guardian.encode_and_sign(user, %{}, token_type: "refresh") do
+          {:ok, %{me: user, token: token}}
+        else
+          _ -> {:error, "Unable to refresh token"}
         end
       end
     end
