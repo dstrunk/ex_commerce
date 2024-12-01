@@ -30,7 +30,6 @@ services:
             - ./backend:/app
             - /app/deps
             - /app/_build
-        command: mix phx.server
         tty: true
         stdin_open: true
 
@@ -47,7 +46,7 @@ services:
         volumes:
             - ./frontend:/app
             - /app/node_modules
-        command: npm run dev
+        stop_signal: SIGKILL
 
     nginx:
         build:

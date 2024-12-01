@@ -6,9 +6,4 @@ RUN mix local.hex --force && \
 
 WORKDIR /app
 
-COPY mix.exs mix.lock ./
-RUN mix deps.get
-
-COPY . .
-
-RUN mix do compile
+CMD [ "/bin/bash", "-c", "mix deps.get ; mix phx.server" ]
