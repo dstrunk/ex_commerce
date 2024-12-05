@@ -1,5 +1,5 @@
 import { defineStore } from '#imports';
-import { useMutation, useQuery } from '@urql/vue';
+import { useQuery, useMutation } from '@urql/vue';
 import type {
     LoginMutation,
     RefreshTokenMutation,
@@ -22,33 +22,22 @@ export const useUserStore = defineStore('user', () => {
     const token = computed(() => window?.localStorage?.getItem('excommerce_token') || null);
     const isLoggedIn = computed(() => !!token.value);
 
-    onMounted(async () => {
-        if (isLoggedIn.value && !user.value) {
-            await executeSessionQuery();
-            user.value = useFragment(UserFieldsFragmentDoc, userData.value?.me) || null;
-        }
-    });
-
-    watch(isLoggedIn, async () => {
-        if (isLoggedIn.value && !user.value) {
-            await executeSessionQuery();
-            user.value = useFragment(UserFieldsFragmentDoc, userData.value?.me) || null;
-        }
-    });
-
     const errorStore = useErrorsStore('user');
     const { errors } = storeToRefs(errorStore);
     const hasErrors = computed(() => errors.value?.length > 0);
+    const resetErrors = () => errorStore.resetErrors();
 
-    const { data: userData, executeQuery: executeSessionQuery } = useQuery<SessionQuery>({ query: SessionDocument, pause: true });
-    const { data: loginData, executeMutation: executeLogin } = useMutation<LoginMutation>(LoginDocument);
-    const { data: registrationData, executeMutation: executeRegistration } = useMutation<RegistrationMutation>(RegistrationDocument);
-    const { data: refreshTokenData, executeMutation: executeTokenRefresh } = useMutation<RefreshTokenMutation>(RefreshTokenDocument);
+    const loginMutation = () => useMutation<LoginMutation>(LoginDocument);
+    const registrationMutation = () => useMutation<RegistrationMutation>(RegistrationDocument);
+    const refreshTokenMutation = () => useMutation<RefreshTokenMutation>(RefreshTokenDocument);
+    const sessionQuery = () => useQuery<SessionQuery>({ query: SessionDocument, pause: true });
 
     const login = async ({ email, password }: { email: string; password: string }) => {
         resetErrors();
 
-        const result = await executeLogin({ email, password });
+        const { executeMutation, data } = loginMutation();
+        const result = await executeMutation({ email, password });
+
         if (result?.error) {
             return errorStore.addError({
                 title: '',
@@ -57,8 +46,8 @@ export const useUserStore = defineStore('user', () => {
             });
         }
 
-        user.value = useFragment(UserFieldsFragmentDoc, loginData.value?.login?.me) || null;
-        window?.localStorage?.setItem('excommerce_token', loginData.value?.login?.token ?? '');
+        user.value = useFragment(UserFieldsFragmentDoc, data.value?.login?.me) || null;
+        window?.localStorage?.setItem('excommerce_token', data.value?.login?.token ?? '');
     };
 
     const logout = async () => {
@@ -71,7 +60,9 @@ export const useUserStore = defineStore('user', () => {
     const register = async ({ firstName, lastName, email, password }: { firstName: string; lastName: string; email: string; password: string }) => {
         resetErrors();
 
-        const result = await executeRegistration({ firstName, lastName, email, password });
+        const { executeMutation, data } = registrationMutation();
+        const result = await executeMutation({ firstName, lastName, email, password });
+
         if (result?.error) {
             return errorStore.addError({
                 title: '',
@@ -80,14 +71,16 @@ export const useUserStore = defineStore('user', () => {
             });
         }
 
-        user.value = useFragment(UserFieldsFragmentDoc, registrationData.value?.register?.me) || null;
-        window?.localStorage?.setItem('excommerce_token', registrationData.value?.register?.token ?? '');
+        user.value = useFragment(UserFieldsFragmentDoc, data.value?.register?.me) || null;
+        window?.localStorage?.setItem('excommerce_token', data.value?.register?.token ?? '');
     };
 
     const refreshToken = async () => {
         resetErrors();
 
-        const result = await executeTokenRefresh();
+        const { executeMutation, data } = refreshTokenMutation();
+        const result = await executeMutation();
+
         if (result?.error) {
             return errorStore.addError({
                 title: '',
@@ -96,13 +89,27 @@ export const useUserStore = defineStore('user', () => {
             });
         }
 
-        user.value = useFragment(UserFieldsFragmentDoc, refreshTokenData.value?.refreshToken?.me) || null;
-        window?.localStorage?.setItem('excommerce_token', refreshTokenData.value?.refreshToken?.token ?? '');
+        user.value = useFragment(UserFieldsFragmentDoc, data.value?.refreshToken?.me) || null;
+        window?.localStorage?.setItem('excommerce_token', data.value?.refreshToken?.token ?? '');
     }
 
-    const resetErrors = () => {
-        errorStore.resetErrors();
-    };
+    const fetchSession = async () => {
+        const { executeQuery, data } = sessionQuery();
+        await executeQuery();
+        user.value = useFragment(UserFieldsFragmentDoc, data.value?.me) || null;
+    }
+
+    watch(isLoggedIn, async (newValue) => {
+        if (newValue && !user.value) {
+            await fetchSession();
+        }
+    });
+
+    onMounted(async () => {
+        if (isLoggedIn.value && !user.value) {
+            await fetchSession();
+        }
+    });
 
     return {
         user,

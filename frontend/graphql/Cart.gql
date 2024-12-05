@@ -1,0 +1,20 @@
+query Cart {
+    cart {
+        ...cartFields
+    }
+}
+
+mutation UpdateCartItems($items: [CartItemInput!]) {
+    cart(updateItems: $items) {
+        ...cartFields
+    }
+}
+
+fragment cartFields on Cart {
+    isActive
+    items {
+        name
+        price
+        quantity
+    }
+}

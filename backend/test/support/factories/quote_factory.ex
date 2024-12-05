@@ -5,7 +5,7 @@ defmodule ExCommerce.QuoteFactory do
     quote do
       def quote_factory do
         %Quote{
-          is_active: Enum.random([true, false]),
+          is_active: true,
           items: build_list(3, :quote_item)
         }
       end

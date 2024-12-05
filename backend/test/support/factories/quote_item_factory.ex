@@ -11,6 +11,15 @@ defmodule ExCommerce.QuoteItemFactory do
           quantity: Enum.random(10..1000)
         }
       end
+
+      def from_product(quote_item, product) do
+        %{quote_item |
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          product_id: product.id
+        }
+      end
     end
   end
 end

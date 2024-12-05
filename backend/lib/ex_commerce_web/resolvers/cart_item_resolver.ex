@@ -4,18 +4,10 @@ defmodule ExCommerceWeb.Resolvers.CartItemResolver do
   import Ecto.Query
 
   def list_items_by_quote(%{id: id}, _args, _info) do
-    query =
-      from qi in QuoteItem,
-        where: qi.quote_id == ^id,
-        select: %{
-          name: qi.name,
-          description: qi.description,
-          price: qi.price,
-          quantity: qi.quantity
-        }
+    items = QuoteItem
+      |> where([i], i.quote_id == ^id)
+      |> Repo.all()
 
-    case Repo.all(query) do
-      items -> {:ok, items}
-    end
+    {:ok, items}
   end
 end

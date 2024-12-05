@@ -30,4 +30,12 @@ export default defineNuxtConfig({
             },
         },
     },
+    routeRules: {
+        '/': { prerender: true },
+        '/account/**': { ssr: false },
+        '/account/login': { prerender: true },
+        '/account/register': { prerender: true },
+        '/products': { swr: true },
+        '/products/**': { swr: 3600 },
+    },
 });

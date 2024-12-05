@@ -8,7 +8,7 @@ defmodule ExCommerce.UserFactory do
           email: Faker.Internet.email(),
           first_name: Faker.Person.first_name(),
           last_name: Faker.Person.last_name(),
-          password_hash: Argon2.hash_pwd_salt('password')
+          password: 'hunter12',
         }
       end
     end
