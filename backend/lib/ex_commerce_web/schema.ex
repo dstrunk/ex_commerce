@@ -1,5 +1,6 @@
 defmodule ExCommerceWeb.Schema do
   use Absinthe.Schema
+  @prototype_schema ExCommerce.Absinthe.OneOfDirective
   alias ExCommerceWeb.Resolvers.{CatalogResolver, CartResolver, CartItemResolver, SessionResolver}
 
   import_types(Absinthe.Type.Custom)
