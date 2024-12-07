@@ -1,4 +1,4 @@
-defmodule ExCommerceWeb.UserResolverTest do
+defmodule ExCommerceWeb.CustomerResolverTest do
   use ExCommerceWeb.ConnCase, async: true
 
   @login_mutation """
@@ -13,19 +13,19 @@ defmodule ExCommerceWeb.UserResolverTest do
   }
   """
 
-  test "users are able to log in", %{conn: conn} do
-    user_attrs = %{
-      email: "user@example.com",
+  test "customers are able to log in", %{conn: conn} do
+    customer_attrs = %{
+      email: "customer@example.com",
       first_name: "Example",
-      last_name: "User",
+      last_name: "Customer",
       password: "password123"
     }
 
-    {:ok, user} = ExCommerce.Account.create_user(user_attrs)
+    {:ok, customer} = ExCommerce.Customer.create_customer(customer_attrs)
 
     input = %{
-      "email" => user_attrs.email,
-      "password" => user_attrs.password
+      "email" => customer_attrs.email,
+      "password" => customer_attrs.password
     }
 
     conn =
@@ -39,30 +39,30 @@ defmodule ExCommerceWeb.UserResolverTest do
                "login" => %{
                  "token" => token,
                  "me" => %{
-                   "id" => user_id,
-                   "email" => user_email
+                   "id" => customer_id,
+                   "email" => customer_email
                  }
                }
              }
            } = json_response(conn, 200)
 
     assert token != nil
-    assert user_id == to_string(user.id)
-    assert user_email == user.email
+    assert customer_id == to_string(customer.id)
+    assert customer_email == customer.email
   end
 
   test "login fails with incorrect credentials", %{conn: conn} do
-    user_attrs = %{
-      email: "user@example.com",
+    customer_attrs = %{
+      email: "customer@example.com",
       first_name: "Example",
-      last_name: "User",
+      last_name: "Customer",
       password: "password123"
     }
 
-    {:ok, _user} = ExCommerce.Account.create_user(user_attrs)
+    {:ok, _customer} = ExCommerce.Customer.create_customer(customer_attrs)
 
     input = %{
-      "email" => user_attrs.email,
+      "email" => customer_attrs.email,
       "password" => "wrongpassword"
     }
 
@@ -91,18 +91,18 @@ defmodule ExCommerceWeb.UserResolverTest do
   }
   """
 
-  test "users are able to register", %{conn: conn} do
-    user_attrs = %{
-      email: "newuser@example.com",
+  test "customers are able to register", %{conn: conn} do
+    customer_attrs = %{
+      email: "newcustomer@example.com",
       firstName: "New",
-      lastName: "User",
+      lastName: "Customer",
       password: "password123"
     }
 
     conn =
       post(conn, "/", %{
         "query" => @register_mutation,
-        "variables" => user_attrs
+        "variables" => customer_attrs
       })
 
     assert %{
@@ -110,18 +110,18 @@ defmodule ExCommerceWeb.UserResolverTest do
                "register" => %{
                  "token" => token,
                  "me" => %{
-                   "email" => user_email
+                   "email" => customer_email
                  }
                }
              }
            } = json_response(conn, 200)
 
     assert token != nil
-    assert user_email == user_attrs.email
+    assert customer_email == customer_attrs.email
 
-    # Verify that the user was actually created in the database
-    assert {:ok, user} = ExCommerce.Account.get_user_by_email(user_attrs.email)
-    assert user.email == user_attrs.email
+    # Verify that the customer was actually created in the database
+    assert {:ok, customer} = ExCommerce.Customer.get_customer_by_email(customer_attrs.email)
+    assert customer.email == customer_attrs.email
   end
 
   test "registration fails with invalid data", %{conn: conn} do
@@ -147,15 +147,15 @@ defmodule ExCommerceWeb.UserResolverTest do
   end
 
   test "registration fails with duplicate email", %{conn: conn} do
-    user_attrs = %{
+    customer_attrs = %{
       email: "existing@example.com",
       first_name: "Another",
       last_name: "Example",
       password: "password123"
     }
 
-    # First, create a user
-    {:ok, _user} = ExCommerce.Account.create_user(user_attrs)
+    # First, create a customer
+    {:ok, _customer} = ExCommerce.Customer.create_customer(customer_attrs)
 
     # Try to register with the same email
     conn =

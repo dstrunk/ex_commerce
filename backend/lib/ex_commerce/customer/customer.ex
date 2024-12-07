@@ -1,11 +1,11 @@
-defmodule ExCommerce.Account.User do
+defmodule ExCommerce.Customer.Customer do
   use Ecto.Schema
   import Ecto.Changeset
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   @derive {Jason.Encoder, except: [:password, :password_hash, :new_password, :new_password_confirmation]}
-  schema "users" do
+  schema "customers" do
     field :email, :string
     field :first_name, :string
     field :last_name, :string
@@ -17,8 +17,8 @@ defmodule ExCommerce.Account.User do
     timestamps()
   end
 
-  def registration_changeset(user, attrs) do
-    user
+  def registration_changeset(customer, attrs) do
+    customer
     |> cast(attrs, [:email, :first_name, :last_name, :password])
     |> validate_required([:email, :first_name, :last_name])
     |> validate_email()
@@ -26,12 +26,12 @@ defmodule ExCommerce.Account.User do
     |> hash_password()
   end
 
-  def update_changeset(user, attrs) do
-    user
+  def update_changeset(customer, attrs) do
+    customer
     |> cast(attrs, [:email, :first_name, :last_name, :password, :new_password, :new_password_confirmation])
     |> validate_required([:first_name, :last_name])
     |> validate_email()
-    |> validate_current_password(user.password_hash)
+    |> validate_current_password(customer.password_hash)
     |> validate_new_password()
   end
 

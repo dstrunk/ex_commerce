@@ -1,28 +1,28 @@
 import { defineStore } from '#imports';
 import { useQuery, useMutation } from '@urql/vue';
 import type {
+    Customer,
     LoginMutation,
     RefreshTokenMutation,
     RegistrationMutation,
     SessionQuery,
-    User
 } from '~/types/graphql/graphql';
 import {
+    CustomerFieldsFragmentDoc,
     LoginDocument,
     RefreshTokenDocument,
     RegistrationDocument,
     SessionDocument,
-    UserFieldsFragmentDoc,
 } from '~/types/graphql/graphql';
 import { ErrorLevel, useErrorsStore } from '~/stores/Errors';
 import { useFragment } from '~/types/graphql';
 
-export const useUserStore = defineStore('user', () => {
-    const user = ref<User | null>(null);
+export const useCustomerStore = defineStore('customer', () => {
+    const user = ref<Customer | null>(null);
     const token = computed(() => window?.localStorage?.getItem('excommerce_token') || null);
     const isLoggedIn = computed(() => !!token.value);
 
-    const errorStore = useErrorsStore('user');
+    const errorStore = useErrorsStore('customer');
     const { errors } = storeToRefs(errorStore);
     const hasErrors = computed(() => errors.value?.length > 0);
     const resetErrors = () => errorStore.resetErrors();
@@ -46,7 +46,7 @@ export const useUserStore = defineStore('user', () => {
             });
         }
 
-        user.value = useFragment(UserFieldsFragmentDoc, data.value?.login?.me) || null;
+        user.value = useFragment(CustomerFieldsFragmentDoc, data.value?.login?.me) || null;
         window?.localStorage?.setItem('excommerce_token', data.value?.login?.token ?? '');
     };
 
@@ -71,7 +71,7 @@ export const useUserStore = defineStore('user', () => {
             });
         }
 
-        user.value = useFragment(UserFieldsFragmentDoc, data.value?.register?.me) || null;
+        user.value = useFragment(CustomerFieldsFragmentDoc, data.value?.register?.me) || null;
         window?.localStorage?.setItem('excommerce_token', data.value?.register?.token ?? '');
     };
 
@@ -89,14 +89,14 @@ export const useUserStore = defineStore('user', () => {
             });
         }
 
-        user.value = useFragment(UserFieldsFragmentDoc, data.value?.refreshToken?.me) || null;
+        user.value = useFragment(CustomerFieldsFragmentDoc, data.value?.refreshToken?.me) || null;
         window?.localStorage?.setItem('excommerce_token', data.value?.refreshToken?.token ?? '');
     }
 
     const fetchSession = async () => {
         const { executeQuery, data } = sessionQuery();
         await executeQuery();
-        user.value = useFragment(UserFieldsFragmentDoc, data.value?.me) || null;
+        user.value = useFragment(CustomerFieldsFragmentDoc, data.value?.me) || null;
     }
 
     watch(isLoggedIn, async (newValue) => {

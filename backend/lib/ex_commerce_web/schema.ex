@@ -29,20 +29,20 @@ defmodule ExCommerceWeb.Schema do
     field :is_active, :boolean
   end
 
-  object :user do
+  object :customer do
     field :id, :id
     field :email, :string
     field :first_name, :string
     field :last_name, :string
 
     field :full_name, :string do
-      resolve(fn user, _, _ -> {:ok, "#{user.first_name} #{user.last_name}"} end)
+      resolve(fn customer, _, _ -> {:ok, "#{customer.first_name} #{customer.last_name}"} end)
     end
   end
 
   object :session do
     field :token, :string
-    field :me, :user
+    field :me, :customer
   end
 
   query do
@@ -63,9 +63,9 @@ defmodule ExCommerceWeb.Schema do
       resolve(&CartResolver.find_quote_by_context/3)
     end
 
-    @desc "Get the current user"
-    field :me, :user do
-      resolve(&SessionResolver.find_user_by_context/3)
+    @desc "Get the current customer"
+    field :me, :customer do
+      resolve(&SessionResolver.find_customer_by_context/3)
     end
   end
 

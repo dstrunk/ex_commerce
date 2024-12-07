@@ -18,10 +18,10 @@ defmodule ExCommerceWeb.Context do
   end
 
   defp build_context(conn) do
-    user_context = with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
+    customer_context = with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
           {:ok, claims} <- ExCommerce.Guardian.decode_and_verify(token),
-          {:ok, user} <- ExCommerce.Guardian.resource_from_claims(claims) do
-        %{current_user: user}
+          {:ok, customer} <- ExCommerce.Guardian.resource_from_claims(claims) do
+        %{current_customer: customer}
       else
         _ -> %{}
       end
@@ -35,6 +35,6 @@ defmodule ExCommerceWeb.Context do
         end
     end
 
-    Map.merge(user_context, quote_context)
+    Map.merge(customer_context, quote_context)
   end
 end

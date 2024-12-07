@@ -49,11 +49,11 @@ defmodule ExCommerceWeb.Resolvers.CartResolver do
   end
 
   defp create_quote_from_context(context) do
-    result = case Map.get(context, :current_user) do
+    result = case Map.get(context, :current_customer) do
       nil ->
         Quote.create_guest_quote()
-      user ->
-        Quote.find_or_create_user_quote(user)
+      customer ->
+        Quote.find_or_create_customer_quote(customer)
     end
 
     case result do

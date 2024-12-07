@@ -9,16 +9,16 @@ defmodule ExCommerce.QuoteTest do
       {:ok, quote} = Quote.create_empty_quote(nil)
 
       assert quote.is_active == true
-      assert quote.user_id == nil
+      assert quote.customer_id == nil
       assert quote.items == []
     end
 
-    test "creates a quote with user_id" do
-      user = build(:user)
-      {:ok, quote} = Quote.create_empty_quote(user.id)
+    test "creates a quote with customer_id" do
+      customer = build(:customer)
+      {:ok, quote} = Quote.create_empty_quote(customer.id)
 
       assert quote.is_active == true
-      assert quote.user_id == user.id
+      assert quote.customer_id == customer.id
       assert quote.items == []
     end
   end
