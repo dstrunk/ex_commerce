@@ -86,7 +86,7 @@ defmodule ExCommerceWeb.Telemetry do
     [
       # A module, function and arguments to be invoked periodically.
       # This function must call :telemetry.execute/3 and a metric must be added above.
-      # {ExCommerceWeb, :count_users, []}
+      # {ExCommerceWeb, :count_customers, []}
     ]
   end
 end

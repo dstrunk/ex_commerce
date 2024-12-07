@@ -1,6 +1,6 @@
 defmodule ExCommerce.Quote do
   @moduledoc """
-  Handles the creation and management of quotes (shopping carts) for both guests and registered users.
+  Handles the creation and management of quotes (shopping carts) for both guests and registered customers.
   """
 
   import Ecto.Query, warn: false
@@ -25,12 +25,12 @@ defmodule ExCommerce.Quote do
   def get_quote!(id), do: Repo.get!(Quote, id) |> Repo.preload(:items)
 
   @doc """
-  Creates a new empty quote for a guest user.
+  Creates a new empty quote for a guest customer.
 
   ## Examples
 
       iex> create_guest_quote()
-      {:ok, %Quote{user_id: nil, items: []}}
+      {:ok, %Quote{customer_id: nil, items: []}}
 
   """
   def create_guest_quote do
@@ -38,15 +38,15 @@ defmodule ExCommerce.Quote do
   end
 
   @doc """
-  Creates a new quote for a guest user with an initial item.
+  Creates a new quote for a guest customer with an initial item.
 
   ## Examples
 
       iex> create_guest_quote_with_item(123)
-      {:ok, %Quote{user_id: nil, items: [%QuoteItem{product_id: 123, quantity: 1}]}}
+      {:ok, %Quote{customer_id: nil, items: [%QuoteItem{product_id: 123, quantity: 1}]}}
 
       iex> create_guest_quote_with_item(123, 2)
-      {:ok, %Quote{user_id: nil, items: [%QuoteItem{product_id: 123, quantity: 2}]}}
+      {:ok, %Quote{customer_id: nil, items: [%QuoteItem{product_id: 123, quantity: 2}]}}
 
       iex> create_guest_quote_with_item(999)
       ** (Ecto.NoResultsError) product not found
@@ -57,70 +57,70 @@ defmodule ExCommerce.Quote do
   end
 
   @doc """
-  Finds an active quote for a user or creates a new empty one.
+  Finds an active quote for a customer or creates a new empty one.
 
   ## Examples
 
-      iex> find_or_create_user_quote(user)
-      {:ok, %Quote{user_id: 123, items: []}}
+      iex> find_or_create_customer_quote(customer)
+      {:ok, %Quote{customer_id: 123, items: []}}
 
-      iex> find_or_create_user_quote(existing_user)
-      {:ok, %Quote{user_id: 456, items: [%QuoteItem{}, ...]}}
+      iex> find_or_create_customer_quote(existing_customer)
+      {:ok, %Quote{customer_id: 456, items: [%QuoteItem{}, ...]}}
   """
-  def find_or_create_user_quote(user) do
-    case get_active_quote(user.id) do
-      nil -> create_quote(user.id)
+  def find_or_create_customer_quote(customer) do
+    case get_active_quote(customer.id) do
+      nil -> create_quote(customer.id)
       quote -> {:ok, quote}
     end
   end
 
   @doc """
-  Finds an active quote for a user and adds an item, or creates a new quote with the item.
+  Finds an active quote for a customer and adds an item, or creates a new quote with the item.
 
   ## Examples
 
-      iex> find_or_create_user_quote_with_item(user, 123)
-      {:ok, %Quote{user_id: 123, items: [%QuoteItem{product_id: 123, quantity: 1}]}}
+      iex> find_or_create_customer_quote_with_item(customer, 123)
+      {:ok, %Quote{customer_id: 123, items: [%QuoteItem{product_id: 123, quantity: 1}]}}
 
-      iex> find_or_create_user_quote_with_item(user, 123, 2)
-      {:ok, %Quote{user_id: 123, items: [%QuoteItem{product_id: 123, quantity: 2}]}}
+      iex> find_or_create_customer_quote_with_item(customer, 123, 2)
+      {:ok, %Quote{customer_id: 123, items: [%QuoteItem{product_id: 123, quantity: 2}]}}
 
-      iex> find_or_create_user_quote_with_item(user, 999)
+      iex> find_or_create_customer_quote_with_item(customer, 999)
       ** (Ecto.NoResultsError) product not found
   """
-  def find_or_create_user_quote_with_item(user, product_id, quantity \\ 1) do
-    case get_active_quote(user.id) do
+  def find_or_create_customer_quote_with_item(customer, product_id, quantity \\ 1) do
+    case get_active_quote(customer.id) do
       nil ->
-        create_quote_with_item(user.id, product_id, quantity)
+        create_quote_with_item(customer.id, product_id, quantity)
       quote ->
         QuoteItem.add_or_update_item(quote, product_id, quantity)
     end
   end
 
   @doc """
-  Transfers a guest quote to a user's account.
-  If the user already has an active quote, merges the items.
+  Transfers a guest quote to a customer's account.
+  If the customer already has an active quote, merges the items.
 
   ## Examples
 
-      iex> transfer_quote_to_user(guest_quote, user)
-      {:ok, %Quote{user_id: 123, items: [%QuoteItem{}, ...]}}
+      iex> transfer_quote_to_customer(guest_quote, customer)
+      {:ok, %Quote{customer_id: 123, items: [%QuoteItem{}, ...]}}
 
-      iex> transfer_quote_to_user(nil, user)
+      iex> transfer_quote_to_customer(nil, customer)
       {:error, :quote_not_found}
   """
-  def transfer_quote_to_user(nil, _user), do: {:error, :quote_not_found}
-  def transfer_quote_to_user(guest_quote, user) do
-    case get_active_quote(user.id) do
+  def transfer_quote_to_customer(nil, _customer), do: {:error, :quote_not_found}
+  def transfer_quote_to_customer(guest_quote, customer) do
+    case get_active_quote(customer.id) do
       nil ->
         guest_quote
-        |> Quote.changeset(%{user_id: user.id})
+        |> Quote.changeset(%{customer_id: customer.id})
         |> Repo.update()
 
-      user_quote ->
-        # Merge items from guest quote into user quote
+      customer_quote ->
+        # Merge items from guest quote into customer quote
         Enum.each(guest_quote.items, fn item ->
-          QuoteItem.add_or_update_item(user_quote, item.product_id, item.quantity)
+          QuoteItem.add_or_update_item(customer_quote, item.product_id, item.quantity)
         end)
 
         # Deactivate guest quote
@@ -128,7 +128,7 @@ defmodule ExCommerce.Quote do
         |> Quote.changeset(%{is_active: false})
         |> Repo.update()
 
-        {:ok, user_quote}
+        {:ok, customer_quote}
     end
   end
 
@@ -137,32 +137,32 @@ defmodule ExCommerce.Quote do
 
   ## Examples
 
-      iex> create_quote(user_id)
+      iex> create_quote(customer_id)
       {:ok, %Quote{}}
 
       iex> create_quote(nil)
       {:ok, %Quote{}}
 
   """
-  def create_quote(user_id) do
+  def create_quote(customer_id) do
     %Quote{}
-    |> Quote.changeset(%{user_id: user_id, is_active: true})
+    |> Quote.changeset(%{customer_id: customer_id, is_active: true})
     |> Repo.insert()
     |> preload_quote_result()
   end
 
-  defp get_active_quote(user_id) do
+  defp get_active_quote(customer_id) do
     Quote
-    |> where(user_id: ^user_id, is_active: true)
+    |> where(customer_id: ^customer_id, is_active: true)
     |> preload(:items)
     |> Repo.one()
   end
 
-  defp create_quote_with_item(user_id, product_id, quantity) do
+  defp create_quote_with_item(customer_id, product_id, quantity) do
     product = Catalog.get_product!(product_id)
 
     Ecto.Multi.new()
-    |> Ecto.Multi.insert(:quote, Quote.changeset(%Quote{}, %{user_id: user_id, is_active: true}))
+    |> Ecto.Multi.insert(:quote, Quote.changeset(%Quote{}, %{customer_id: customer_id, is_active: true}))
     |> Ecto.Multi.insert(:quote_item, fn %{quote: quote} ->
       QuoteItem.changeset(%QuoteItem{}, %{
         name: product.name,

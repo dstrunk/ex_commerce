@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { useUserStore } from '~/stores/User';
+import { useCustomerStore } from '~/stores/Customer';
 import { definePageMeta } from '#imports';
 import { navigateTo } from '#app';
 
@@ -33,8 +33,8 @@ definePageMeta({
     middleware: ['logged-in'],
 })
 
-const userStore = useUserStore();
-const { errors, hasErrors } = storeToRefs(userStore);
+const customerStore = useCustomerStore();
+const { errors, hasErrors } = storeToRefs(customerStore);
 
 interface LoginFormProps {
     email: string;
@@ -42,7 +42,7 @@ interface LoginFormProps {
 }
 
 const submit = async ({ email, password }: LoginFormProps) => {
-    await userStore.login({ email, password });
+    await customerStore.login({ email, password });
 
     navigateTo('/account/overview');
 };

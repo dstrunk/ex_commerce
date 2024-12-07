@@ -11,8 +11,8 @@ defmodule ExCommerce.Guardian do
   end
 
   def resource_from_claims(%{"sub" => id}) do
-    user = ExCommerce.Account.get_user!(id)
-    {:ok, user}
+    customer = ExCommerce.Customer.get_customer!(id)
+    {:ok, customer}
   end
 
   def resource_from_claims(_claims) do

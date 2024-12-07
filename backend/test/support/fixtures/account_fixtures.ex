@@ -1,23 +1,23 @@
-defmodule ExCommerce.AccountFixtures do
+defmodule ExCommerce.CustomerFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `ExCommerce.Account` context.
+  entities via the `ExCommerce.Customer` context.
   """
 
   @doc """
-  Generate a user.
+  Generate a customer.
   """
-  def user_fixture(attrs \\ %{}) do
-    {:ok, user} =
+  def customer_fixture(attrs \\ %{}) do
+    {:ok, customer} =
       attrs
       |> Enum.into(%{
-        email: "user@example.com",
+        email: "customer@example.com",
         password: "hunter12",
         first_name: "some first_name",
         last_name: "some last_name"
       })
-      |> ExCommerce.Account.create_user()
+      |> ExCommerce.Customer.create_customer()
 
-    user
+    customer
   end
 end
