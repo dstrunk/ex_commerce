@@ -1,7 +1,7 @@
 defmodule ExCommerceWeb.Schema do
   use Absinthe.Schema
   @prototype_schema ExCommerce.Absinthe.OneOfDirective
-  alias ExCommerceWeb.Resolvers.{CatalogResolver, CartResolver, CartItemResolver, SessionResolver}
+  alias ExCommerceWeb.Resolvers.{CatalogResolver, CartResolver, CartItemResolver, SessionResolver, CustomerResolver}
 
   import_types(Absinthe.Type.Custom)
 
@@ -34,10 +34,24 @@ defmodule ExCommerceWeb.Schema do
     field :email, :string
     field :first_name, :string
     field :last_name, :string
-
     field :full_name, :string do
       resolve(fn customer, _, _ -> {:ok, "#{customer.first_name} #{customer.last_name}"} end)
     end
+
+    field :addresses, list_of(non_null(:address))
+  end
+
+  object :address do
+    field :id, :id
+    field :address_line_1, :string
+    field :address_line_2, :string
+    field :address_line_3, :string
+    field :locality, :string
+    field :postal_code, :string
+    field :administrative_area, :string
+    field :country_code, :string
+    field :is_default_shipping, :boolean
+    field :is_default_billing, :boolean
   end
 
   object :session do
@@ -74,6 +88,31 @@ defmodule ExCommerceWeb.Schema do
     field :quantity, non_null(:integer)
   end
 
+  input_object :add_address_input do
+    field :address_line_1, non_null(:string)
+    field :address_line_2, :string
+    field :address_line_3, :string
+    field :locality, non_null(:string)
+    field :postal_code, non_null(:string)
+    field :administrative_area, non_null(:string)
+    field :country_code, non_null(:string)
+    field :is_default_shipping, :boolean
+    field :is_default_billing, :boolean
+  end
+
+  input_object :update_address_input do
+    field :address_id, non_null(:id)
+    field :address_line_1, :string
+    field :address_line_2, :string
+    field :address_line_3, :string
+    field :locality, :string
+    field :postal_code, :string
+    field :administrative_area, :string
+    field :country_code, :string
+    field :is_default_shipping, :boolean
+    field :is_default_billing, :boolean
+  end
+
   mutation do
     @desc "Add to cart"
     field :cart, :cart do
@@ -83,6 +122,16 @@ defmodule ExCommerceWeb.Schema do
       #      arg :finalize, non_null(:finalize_input)
 
       resolve(&CartResolver.cart/3)
+    end
+
+    field :customer, :customer do
+      @desc "Add a new address"
+      arg(:add_address, :add_address_input)
+
+      @desc "Update a saved address"
+      arg(:update_address, :update_address_input)
+
+      resolve(&CustomerResolver.customer/3)
     end
 
     @desc "Register"

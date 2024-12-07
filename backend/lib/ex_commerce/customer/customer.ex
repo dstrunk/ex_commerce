@@ -13,6 +13,7 @@ defmodule ExCommerce.Customer.Customer do
     field :new_password, :string, virtual: true
     field :new_password_confirmation, :string, virtual: true
     field :password_hash, :string
+    has_many :addresses, ExCommerce.Customer.Address
 
     timestamps()
   end

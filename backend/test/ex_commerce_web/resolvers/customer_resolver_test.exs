@@ -1,5 +1,9 @@
 defmodule ExCommerceWeb.CustomerResolverTest do
   use ExCommerceWeb.ConnCase, async: true
+  import ExCommerce.Factory
+
+  alias ExCommerceWeb.Resolvers.CustomerResolver
+  alias ExCommerce.Repo
 
   @login_mutation """
   mutation Login($email: String!, $password: String!) {
@@ -175,5 +179,128 @@ defmodule ExCommerceWeb.CustomerResolverTest do
            } = json_response(conn, 200)
 
     assert error_message =~ "Unable to sign up"
+  end
+
+  describe "customer addresses" do
+    test "customers can add a default shipping address" do
+      customer = insert(:customer)
+      address_attrs = %{
+        address_line_1: "123 Main St",
+        locality: "Portland",
+        postal_code: "97201",
+        administrative_area: "OR",
+        country_code: "US",
+        is_default_shipping: true
+      }
+
+      context = %{context: %{current_customer: customer}}
+
+      assert {:ok, address} =
+               CustomerResolver.customer(nil, %{add_address: address_attrs}, context)
+
+      assert address.address_line_1 == "123 Main St"
+      assert address.is_default_shipping == true
+      assert address.customer_id == customer.id
+    end
+
+    test "customers can add a default billing address" do
+      customer = insert(:customer)
+      address_attrs = %{
+        address_line_1: "456 Oak Ave",
+        locality: "Portland",
+        postal_code: "97201",
+        administrative_area: "OR",
+        country_code: "US",
+        is_default_billing: true
+      }
+
+      context = %{context: %{current_customer: customer}}
+
+      assert {:ok, address} =
+               CustomerResolver.customer(nil, %{add_address: address_attrs}, context)
+
+      assert address.is_default_billing == true
+      assert address.customer_id == customer.id
+    end
+
+    test "customers adding a new default shipping address will unset the previous default shipping address" do
+      customer = insert(:customer)
+      old_address = insert(:address, customer: customer, is_default_shipping: true)
+
+      new_address_attrs = %{
+        address_line_1: "789 Pine St",
+        locality: "Portland",
+        postal_code: "97201",
+        administrative_area: "OR",
+        country_code: "US",
+        is_default_shipping: true
+      }
+
+      context = %{context: %{current_customer: customer}}
+
+      assert {:ok, new_address} =
+               CustomerResolver.customer(nil, %{add_address: new_address_attrs}, context)
+
+      # Reload the old address to check its updated status
+      updated_old_address = Repo.reload!(old_address)
+
+      assert new_address.is_default_shipping == true
+      refute updated_old_address.is_default_shipping
+    end
+
+    test "customers adding a new default billing address will unset the previous default billing address" do
+      customer = insert(:customer)
+      old_address = insert(:address, customer: customer, is_default_billing: true)
+
+      new_address_attrs = %{
+        address_line_1: "321 Elm St",
+        locality: "Portland",
+        postal_code: "97201",
+        administrative_area: "OR",
+        country_code: "US",
+        is_default_billing: true
+      }
+
+      context = %{context: %{current_customer: customer}}
+
+      assert {:ok, new_address} =
+               CustomerResolver.customer(nil, %{add_address: new_address_attrs}, context)
+
+      updated_old_address = Repo.reload!(old_address)
+
+      assert new_address.is_default_billing == true
+      refute updated_old_address.is_default_billing
+    end
+
+    test "returns error when customer is not authenticated" do
+      address_attrs = %{
+        address_line_1: "123 Main St",
+        locality: "Portland",
+        postal_code: "97201",
+        administrative_area: "OR",
+        country_code: "US"
+      }
+
+      context = %{context: %{}}
+
+      assert {:error, "Customer is not logged in"} =
+               CustomerResolver.customer(nil, %{add_address: address_attrs}, context)
+    end
+
+    test "cannot update address belonging to different customer" do
+      customer = insert(:customer)
+      other_customer = insert(:customer)
+      address = insert(:address, customer: other_customer)
+
+      update_attrs = %{
+        address_id: address.id,
+        address_line_1: "New Address"
+      }
+
+      context = %{context: %{current_customer: customer}}
+
+      assert {:error, "Address not found"} =
+               CustomerResolver.customer(nil, %{update_address: update_attrs}, context)
+    end
   end
 end

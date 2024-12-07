@@ -1,5 +1,6 @@
 defmodule ExCommerce.CustomerTest do
-  use ExCommerce.DataCase
+  use ExCommerce.DataCase, async: true
+  import ExCommerce.Factory
 
   describe "customers" do
     alias ExCommerce.Customer.Customer
@@ -71,6 +72,77 @@ defmodule ExCommerce.CustomerTest do
     test "change_customer/1 returns a customer changeset" do
       customer = customer_fixture()
       assert %Ecto.Changeset{} = ExCommerce.Customer.change_customer(customer)
+    end
+  end
+
+  describe "addresses" do
+    alias ExCommerce.Customer.Address
+
+    import ExCommerce.CustomerFixtures
+
+    @invalid_attrs %{address_line_1: nil, address_line_2: nil, address_line_3: nil, locality: nil, postal_code: nil, administrative_area: nil, country_code: nil, is_default_shipping: nil, is_default_billing: nil}
+
+    test "list_addresses/0 returns all addresses" do
+      address = address_fixture()
+      assert ExCommerce.Customer.list_addresses() == [address]
+    end
+
+    test "get_address!/1 returns the address with given id" do
+      address = address_fixture()
+      assert ExCommerce.Customer.get_address!(address.id) == address
+    end
+
+    test "create_address/1 with valid data creates a address" do
+      customer = customer_fixture()
+      valid_attrs = %{address_line_1: "some address_line_1", address_line_2: "some address_line_2", address_line_3: "some address_line_3", locality: "some locality", postal_code: "some postal_code", administrative_area: "some administrative_area", country_code: "some country_code", is_default_shipping: true, is_default_billing: true, customer_id: customer.id}
+
+      assert {:ok, %Address{} = address} = ExCommerce.Customer.create_address(valid_attrs)
+      assert address.address_line_1 == "some address_line_1"
+      assert address.address_line_2 == "some address_line_2"
+      assert address.address_line_3 == "some address_line_3"
+      assert address.locality == "some locality"
+      assert address.postal_code == "some postal_code"
+      assert address.administrative_area == "some administrative_area"
+      assert address.country_code == "some country_code"
+      assert address.is_default_shipping == true
+      assert address.is_default_billing == true
+    end
+
+    test "create_address/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = ExCommerce.Customer.create_address(@invalid_attrs)
+    end
+
+    test "update_address/2 with valid data updates the address" do
+      address = address_fixture()
+      update_attrs = %{address_line_1: "some updated address_line_1", address_line_2: "some updated address_line_2", address_line_3: "some updated address_line_3", locality: "some updated locality", postal_code: "some updated postal_code", administrative_area: "some updated administrative_area", country_code: "some updated country_code", is_default_shipping: false, is_default_billing: false}
+
+      assert {:ok, %Address{} = address} = ExCommerce.Customer.update_address(address, update_attrs)
+      assert address.address_line_1 == "some updated address_line_1"
+      assert address.address_line_2 == "some updated address_line_2"
+      assert address.address_line_3 == "some updated address_line_3"
+      assert address.locality == "some updated locality"
+      assert address.postal_code == "some updated postal_code"
+      assert address.administrative_area == "some updated administrative_area"
+      assert address.country_code == "some updated country_code"
+      assert address.is_default_shipping == false
+      assert address.is_default_billing == false
+    end
+
+    test "update_address/2 with invalid data returns error changeset" do
+      address = address_fixture()
+      assert {:error, %Ecto.Changeset{}} = ExCommerce.Customer.update_address(address, @invalid_attrs)
+      assert address == ExCommerce.Customer.get_address!(address.id)
+    end
+
+    test "delete_address/1 deletes the address" do
+      address = address_fixture()
+      assert {:ok, %Address{}} = ExCommerce.Customer.delete_address(address)
+      assert_raise Ecto.NoResultsError, fn -> ExCommerce.Customer.get_address!(address.id) end
+    end
+
+    test "change_address/1 returns a address changeset" do
+      address = address_fixture()
+      assert %Ecto.Changeset{} = ExCommerce.Customer.change_address(address)
     end
   end
 end
